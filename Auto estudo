@@ -1,0 +1,52 @@
+#install.packages("WDI")
+library(WDI)
+
+options(scipen = 999)
+HBedsDadosEmPainel <- WDI(country = "all", 
+                          indicator = "SH.MED.BEDS.ZS")
+# DADOS EM PAINEL - VARIOS LOCAIS E PERIODOS - CAMAS DE HOPITAL DISPONÍVEIS (PER 1000 PESSOAS)
+
+options(scipen = 999)
+HBedsCorteTransversal <- WDI(country = "all", 
+                             indicator = "SH.MED.BEDS.ZS", 
+                             start = 2023, 
+                             end = 2023)
+# CORTE TRANSVERSAL - VARIOS LOCAIS UM PERIODO - CAMAS DE HOPITAL DISPONÍVEIS (PER 1000 PESSOAS)
+
+options(scipen = 999)
+HBedsSerieTemporalBR <- WDI(country = "BR",
+                            indicator = "SH.MED.BEDS.ZS", 
+                            start = 1990, 
+                            end = 2023)
+# SERIE TEMPORAL - ALGUM ATIVO FINANCEIRO AO LONGO DO TEMPO EM UM LUGAR - CAMAS DE HOPITAL DISPONÍVEIS (PER 1000 PESSOAS)
+
+install.packages("tidyverse")
+library(ggplot2)
+library(tidyverse)
+
+
+
+grafpainel <- ggplot(HBedsDadosEmPainel,
+                     mapping = aes(y = SH.MED.BEDS.ZS,
+                                   x = year)) +
+  geom_point()
+print(grafpainel)
+
+
+grafcortetransversal <- ggplot(HBedsCorteTransversal,
+                               mapping = aes(y = SH.MED.BEDS.ZS,
+                                             x = year)) +
+  geom_point()
+print(grafcortetransversal)
+
+
+
+grafserietemporal <- ggplot(HBedsSerieTemporalBR,
+                            mapping = aes(y = SH.MED.BEDS.ZS,
+                                          x = year)) +
+  geom_point()
+print(grafserietemporal)
+
+
+
+
