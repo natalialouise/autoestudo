@@ -1,0 +1,161 @@
+---
+title: "Natália Louise"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages # nomes unicos
+#| include: false # nao inclui o resultado no doc
+
+library(tidyverse)
+library(WDI)
+library(ggplot2)
+
+
+HBedsDadosEmPainel <- WDI(country = c("ARG", "BRA", "CHL", "COL", "CRI", "CUB", 
+                                         "DOM", "ECU", "SLV","GTM", 
+                                         "MEX", "NIC", "PRY", 
+                                         "PER", "TTO", "URY", "VEN"),
+                          indicator = "EN.GHG.CO2.AG.MT.CE.AR5", 
+                          start = 2010, 
+                          end = 2022)
+
+
+
+HBedsSerieTemporalBR <- WDI(country = "BR",
+                            indicator = "EN.GHG.CO2.AG.MT.CE.AR5", 
+                            start = 2010, 
+                            end = 2022)
+
+
+
+HBedsCorteTransversal <- WDI(country = c("ARG", "BRA", "CHL", "COL", "CRI", "CUB", 
+                                         "DOM", "ECU", "SLV","GTM", 
+                                         "MEX", "NIC", "PRY", 
+                                         "PER", "TTO", "URY", "VEN"),
+                             indicator = "EN.GHG.CO2.AG.MT.CE.AR5", 
+                             start = 2021, 
+                             end = 2021)
+
+
+```
+
+## Emissões de GEE da Agricultura (equivalente a CO₂, AR5)
+
+Essa variável mede as **emissões anuais de gases de efeito estufa (GEE)** originadas do setor **agrícola**, expressas em **milhões de toneladas de CO₂ equivalente (MtCO₂e)**.\
+Ela considera os principais processos emissores da agricultura, incluindo:
+
+-   **Fermentação entérica** (emissões de metano do sistema digestivo de ruminantes)
+
+-   **Manejo de esterco**
+
+-   **Queima de resíduos agrícolas**
+
+-   **Aplicação de ureia e calcário no solo**
+
+-   **Emissões diretas e indiretas de N₂O (óxido nitroso)** de solos manejados
+
+-   **Cultivo de arroz**, que libera metano em áreas alagadas
+
+Os valores são convertidos para **equivalentes de CO₂** usando os **fatores de Potencial de Aquecimento Global (GWP)** do **5º Relatório de Avaliação do IPCC (AR5)**.
+
+Esta variável é fundamental para monitorar o impacto da agricultura nas **mudanças climáticas**, permitindo comparações entre países e ao longo do tempo, conforme os compromissos climáticos internacionais.
+
+## Gráfico Dados em Painel
+
+Gráficos dados em painel são ferramentas úteis para examinar a trajetória de uma variável ao longo do tempo em diferentes regiões ou países, permitindo comparações diretas entre eles. No presente caso, o gráfico retrata as **emissões de gases de efeito estufa (GEE) provenientes da agricultura**, entre os anos de **2010 e 2022**, abrangendo diversos países da América Latina. Essa representação gráfica facilita a visualização das flutuações do indicador em cada país, evidenciando as diferenças e tendências ao longo do período analisado.
+
+```{r}
+#| label: dadosempainel 
+#| warning: false 
+#| echo: false  
+
+
+ggplot(HBedsDadosEmPainel,
+                              aes(x = year,
+                                  y = EN.GHG.CO2.AG.MT.CE.AR5,
+                                  color = country,
+                                  group = country)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = seq(min(HBedsDadosEmPainel$year), 
+                                  max(HBedsDadosEmPainel$year), by = 1)) +
+  labs(
+    title = "Emissões Agrícolas de GEE (CO₂ equivalente) na América Latina",
+    subtitle = "Toneladas métricas por pessoa (2000–2022)",
+    x = "Ano",
+    y = "Emissões de CO₂ per capita (t)",
+    color = "País"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+```
+
+## Gráfico Série Temporal
+
+Gráficos de série temporal são ferramentas fundamentais para a análise da dinâmica de uma variável ao longo do tempo em uma determinada unidade geográfica. Neste contexto, o gráfico apresentado retrata a evolução das **emissões de gases de efeito estufa (GEE) oriundas da atividade agrícola** no **Brasil**, entre os anos de **2010 e 2022**, abrangendo um período de **12 anos**. A visualização proporciona uma compreensão mais clara sobre a trajetória do indicador, permitindo identificar **padrões temporais, variações relevantes e tendências comportamentais** ao longo da série histórica.
+
+```{r}
+#| label: serietemporal
+#| warning: false
+#| echo: false
+
+ggplot(HBedsSerieTemporalBR,
+                            aes(x = year,
+                                y = EN.GHG.CO2.AG.MT.CE.AR5)) +
+  geom_line(color = "#2C3E50", size = 1) +
+  geom_point(color = "#E74C3C", size = 2) +
+  scale_x_continuous(breaks = seq(min(HBedsSerieTemporalBR$year),
+                                  max(HBedsSerieTemporalBR$year), by = 1)) +
+  labs(
+    title = "Emissões Agrícolas de GEE (CO₂ equivalente) no Brasil",
+    subtitle = "Emissões em MtCO₂e por ano",
+    x = "Ano",
+    y = "Emissões (MtCO₂e)",
+    caption = "Fonte: WDI (EN.GHG.CO2.AG.MT.CE.AR5)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+## Gráfico Corte Transversal
+
+O gráfico de corte transversal representa os valores de uma variável em um único ponto no tempo, permitindo a análise comparativa entre diferentes regiões geográficas. Neste caso, são apresentadas as **emissões de gases de efeito estufa (GEE) provenientes da agricultura** no ano de **2021**, considerando os países da **América Latina**. Essa abordagem facilita a comparação direta do indicador entre os países selecionados em um mesmo período de referência.
+
+```{r}
+#| label: cortetransversal
+#| warning: false
+#| echo: false
+
+
+
+ggplot(HBedsCorteTransversal,
+                         aes(x = reorder(country, EN.GHG.CO2.AG.MT.CE.AR5),
+                             y = EN.GHG.CO2.AG.MT.CE.AR5)) +
+  geom_col(fill = "#3498DB") +
+  geom_text(aes(label = round(EN.GHG.CO2.AG.MT.CE.AR5, 1)),
+            vjust = -0.3, size = 3.5) +
+  labs(
+    title = "Emissões Agrícolas de GEE (CO₂ equivalente) por País",
+    subtitle = "Emissões em MtCO₂e no ano mais recente disponível",
+    x = "País",
+    y = "Emissões Agrícolas (MtCO₂e)",
+    caption = "Fonte: WDI (EN.GHG.CO2.AG.MT.CE.AR5)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+```
