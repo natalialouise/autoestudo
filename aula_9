@@ -1,0 +1,90 @@
+HBedsDadosEmPainel <- WDI(country = c("ARG", "BRA", "CHL", "COL", "CRI", "CUB", 
+                                         "DOM", "ECU", "SLV","GTM", 
+                                         "MEX", "NIC", "PRY", 
+                                         "PER", "TTO", "URY", "VEN"),
+                          indicator = "EN.GHG.CO2.AG.MT.CE.AR5", 
+                          start = 2010, 
+                          end = 2022)
+
+
+
+HBedsSerieTemporalBR <- WDI(country = "BR",
+                            indicator = "EN.GHG.CO2.AG.MT.CE.AR5", 
+                            start = 2010, 
+                            end = 2022)
+
+
+
+DadosEmPainel <- HBedsCorteTransversal <- WDI(country = c("ARG", "BRA", "CHL", "COL", "CRI", "CUB", 
+                                         "DOM", "ECU", "SLV","GTM", 
+                                         "MEX", "NIC", "PRY", 
+                                         "PER", "TTO", "URY", "VEN"),
+                             indicator = "EN.GHG.CO2.AG.MT.CE.AR5", 
+                             start = 2021, 
+                             end = 2021)
+
+
+ggplot(HBedsDadosEmPainel,
+                              aes(x = year,
+                                  y = EN.GHG.CO2.AG.MT.CE.AR5,
+                                  color = country,
+                                  group = country)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = seq(min(HBedsDadosEmPainel$year), 
+                                  max(HBedsDadosEmPainel$year), by = 1)) +
+  labs(
+    title = "Emissões Agrícolas de GEE (CO₂ equivalente) na América Latina",
+    subtitle = "Toneladas métricas por pessoa (2000–2022)",
+    x = "Ano",
+    y = "Emissões de CO₂ per capita (t)",
+    color = "País"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom"
+  )
+
+
+ggplot(HBedsSerieTemporalBR,
+                            aes(x = year,
+                                y = EN.GHG.CO2.AG.MT.CE.AR5)) +
+  geom_line(color = "#2C3E50", size = 1) +
+  geom_point(color = "#E74C3C", size = 2) +
+  scale_x_continuous(breaks = seq(min(HBedsSerieTemporalBR$year),
+                                  max(HBedsSerieTemporalBR$year), by = 1)) +
+  labs(
+    title = "Emissões Agrícolas de GEE (CO₂ equivalente) no Brasil",
+    subtitle = "Emissões em MtCO₂e por ano",
+    x = "Ano",
+    y = "Emissões (MtCO₂e)",
+    caption = "Fonte: WDI (EN.GHG.CO2.AG.MT.CE.AR5)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(size = 11),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+ggplot(HBedsCorteTransversal,
+                         aes(x = reorder(country, EN.GHG.CO2.AG.MT.CE.AR5),
+                             y = EN.GHG.CO2.AG.MT.CE.AR5)) +
+  geom_col(fill = "#3498DB") +
+  geom_text(aes(label = round(EN.GHG.CO2.AG.MT.CE.AR5, 1)),
+            vjust = -0.3, size = 3.5) +
+  labs(
+    title = "Emissões Agrícolas de GEE (CO₂ equivalente) por País",
+    subtitle = "Emissões em MtCO₂e no ano mais recente disponível",
+    x = "País",
+    y = "Emissões Agrícolas (MtCO₂e)",
+    caption = "Fonte: WDI (EN.GHG.CO2.AG.MT.CE.AR5)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
